@@ -1,0 +1,22 @@
+{
+  "xsappname": "security-demo",
+  "tenant-mode": "dedicated",
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.securityAdmin",
+      "description": "securityAdmin",
+      "grant-as-authority-to-apps" : [ "$XSAPPNAME(application, xsappforclientapp)"]
+    }
+  ],
+  "attributes": [],
+  "role-templates": [
+    {
+      "name": "securityAdmin",
+      "description": "generated",
+      "scope-references": [
+        "$XSAPPNAME.securityAdmin"
+      ],
+      "attribute-references": []
+    }
+  ]
+}

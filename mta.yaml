@@ -1,0 +1,58 @@
+ID: security-demo
+_schema-version: "2.1"
+version: 0.0.1
+modules:  
+  - name: security-demo-db
+    type: hdb
+    path: db
+    parameters:
+      memory: 256M
+      disk-quota: 512M
+    requires:
+      - name: security-demo-db-hdi-container
+  - name: security-demo-srv
+    type: nodejs
+    path: srv
+    parameters:
+      memory: 512M
+      disk-quota: 512M
+    provides:
+      - name: srv_api
+        properties:
+          url: ${default-url}
+    requires:
+      - name: security-demo-db-hdi-container
+      - name: security-demo-uaa
+#  - name: security-demo-app-router
+#    type: nodejs
+#    path: app
+#    build-parameters:
+#      ignore: ["node_modules/"]    
+#    parameters:
+#       disk-quota: 256M
+#       memory: 256M
+#    requires:
+#      - name: security-demo-uaa
+#      - name: srv_api
+#        group: destinations
+#        properties:
+#          forwardAuthToken: true
+#          strictSSL: false
+#          name: srv_api
+#          url: ~{url}      
+resources:
+  - name: security-demo-db-hdi-container
+    type: com.sap.xs.hdi-container
+    properties:
+      hdi-container-name: ${service-name}
+  - name: security-demo-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service-plan: application
+      service: xsuaa
+      service-keys:
+        - name: security-demo-uaa-key
+      config:
+        xsappname: security-demo-${space}
+        tenant-mode: dedicated
